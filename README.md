@@ -525,11 +525,19 @@ importaciones- descargar reportes
 Precios de mercados- marketing consultar precios de diferentes productos permite conectar a indicaodres en excel 
 
 
-
-
-
-
-
 ventas nacionales 
 exportaciones
 gestion experencias
+
+Paleta de colores 
+
+Rosa_1: #A60A43
+Rosa_2: #D984A3
+Amarillo_1: #D99518
+Amarillo_2: #F2C879
+
+
+
+
+
+
