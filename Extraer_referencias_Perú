@@ -1,0 +1,92 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Oscar52analitica/Esenttia/blob/main/Extraer_referencias_Per%C3%BA\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import re\n",
+        "import pandas as pd"
+      ],
+      "metadata": {
+        "id": "BueMQqJRRp07"
+      },
+      "execution_count": 12,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = pd.read_excel('BDD_PERÚ.xlsx', sheet_name='Data_Original_Perú')"
+      ],
+      "metadata": {
+        "id": "IscL932ORr7z"
+      },
+      "execution_count": 13,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Función para extraer la referencia o código\n",
+        "def extraer_referencia(texto):\n",
+        "    if pd.isna(texto):  # Verifica si el texto es NaN\n",
+        "        return \"Referencia no identificada\"  # Devuelve \"Referencia no identificada\" si el texto es NaN\n",
+        "\n",
+        "    try:\n",
+        "        # Expresión regular para capturar solo el texto que aparece después de \"CODIGO:\", \"REF:\" o \"REFERENCIA:\"\n",
+        "        match = re.search(r'\\b(?:CODIGO|REF|REFERENCIA):\\s*([^\\s,;//]+)', texto, re.IGNORECASE)\n",
+        "\n",
+        "        # Si hay coincidencia y hay texto después de \"CODIGO:\", \"REF:\" o \"REFERENCIA:\", lo devolvemos\n",
+        "        if match:\n",
+        "            referencia = match.group(1)\n",
+        "            return referencia.strip() if referencia else \"Referencia no identificada\"\n",
+        "\n",
+        "        # Si no se encuentra ninguna coincidencia, devolvemos \"Referencia no identificada\"\n",
+        "        return \"Referencia no identificada\"\n",
+        "    except Exception as e:\n",
+        "        print(f\"Error: {e}\")  # Imprime el error si ocurre\n",
+        "        return \"Referencia no identificada\"  # En caso de error, devolvemos \"Referencia no identificada\"\n",
+        "\n",
+        "# Procesar la hoja llamada \"Data_Original_Perú\"\n",
+        "df = pd.read_excel('BDD_PERÚ.xlsx', sheet_name='Data_Original_Perú')  # Archivo de Excel con la hoja especificada\n",
+        "\n",
+        "# Aplicamos la función a cada columna de descripción y combinamos los resultados en 'Referencia_1'\n",
+        "columnas_descripcion = ['Descripcion1', 'Descripcion2', 'Descripcion3', 'Descripcion4', 'Descripcion5']\n",
+        "df['Referencia_1'] = df[columnas_descripcion].apply(\n",
+        "    lambda row: next((extraer_referencia(row[col]) for col in columnas_descripcion if extraer_referencia(row[col]) != \"Referencia no identificada\"), \"Referencia no identificada\"),\n",
+        "    axis=1\n",
+        ")\n",
+        "\n",
+        "# Guardar el DataFrame procesado en un nuevo archivo de Excel\n",
+        "df.to_excel('BDD_PERÚ_con_referencias_Data_Original_Perú.xlsx', index=False)\n"
+      ],
+      "metadata": {
+        "id": "KEzV9fQh2M34"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Te damos la bienvenida a Colaboratory",
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
